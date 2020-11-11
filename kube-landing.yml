@@ -1,0 +1,49 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: landing-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  #type: LoadBalancer
+  selector:
+    app: landing
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: landing-deployment
+spec:
+  selector:
+    matchLabels:
+      app: landing
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: landing
+    spec:
+      containers:
+      - name: landing
+        image: irpank/landingpage-app:tag
+        ports:
+        - containerPort: 80
+        imagePullPolicy: "Always"
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: landing-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: landing.komarudins.online
+    http:
+      paths:
+      #- path: /
+      - backend:
+          serviceName: landing-service
+          servicePort: 80
