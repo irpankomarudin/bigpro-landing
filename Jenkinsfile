@@ -1,5 +1,5 @@
-env.DOCKER_REGISTRY = 'rizaleko'
-env.DOCKER_IMAGE_NAME = 'landing'
+env.DOCKER_REGISTRY = 'irpank'
+env.DOCKER_IMAGE_NAME = 'landingpage-app'
 pipeline {
     agent any
     stages {
@@ -20,22 +20,22 @@ pipeline {
            }
         stage('tagging') {
             steps {
-                sh('sed -i "s/tag/$BUILD_NUMBER/g" landing.yml')
+                sh('sed -i "s/tag/$BUILD_NUMBER/g" kube-landing.yml')
                 }
            }
-        stage('locate namespace') {
-            steps {
-                sh('sed -i "s/default/production/g" landing.yml')
-                }
-           }
+        //stage('locate namespace') {
+            //steps {
+                //sh('sed -i "s/default/production/g" kube-landing.yml')
+                //}
+           //}
         stage('add domain') {
             steps {
-                sh('sed -i "s/landing.ridjal.com/landing.ridjal.com/g" landing.yml')
+                sh('sed -i "s/landing.komarudins.online/landing.komarudins.online/g" kube-landing.yml')
                 }
            }
         stage('deploy') {
             steps {
-                sh('kubectl apply -f landing.yml')
+                sh('kubectl apply -f kube-landing.yml')
                 }
            }
         stage('remove image docker') {
@@ -43,10 +43,10 @@ pipeline {
                 sh "docker rmi $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER"
                 }
            }
-         stage('show ingress') {
-            steps {
-                sh('kubectl get ingress -n=productin')
-                }
-           }        
+         //stage('show ingress') {
+            //steps {
+                //sh('kubectl get ingress -n=productin')
+                //}
+           //}        
       }
 }
