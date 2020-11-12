@@ -3,11 +3,11 @@ env.DOCKER_IMAGE_NAME = 'landingpage-app'
 pipeline {
     agent any
     stages {
-        stage('build') {
-            steps {
-                sh('sed -i "s/tag/$BUILD_NUMBER/g" index.html')
-                }
-            }
+        //stage('build') {
+            //steps {
+                //sh('sed -i "s/tag/$BUILD_NUMBER/g" index.html')
+                //}
+            //}
         stage('docker build') {
             steps {
                 sh "docker build --build-arg APP_NAME=$DOCKER_IMAGE_NAME -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER ."
@@ -23,11 +23,11 @@ pipeline {
                 sh('sed -i "s/tag/$BUILD_NUMBER/g" kube-landing.yml')
                 }
            }
-        //stage('locate namespace') {
-            //steps {
-                //sh('sed -i "s/default/production/g" kube-landing.yml')
-                //}
-           //}
+        stage('locate namespace') {
+            steps {
+                sh('sed -i "s/default/production/g" kube-landing.yml')
+                }
+           }
         stage('add domain') {
             steps {
                 sh('sed -i "s/landing.komarudins.online/landing.komarudins.online/g" kube-landing.yml')
@@ -43,10 +43,10 @@ pipeline {
                 sh "docker rmi $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER"
                 }
            }
-         //stage('show ingress') {
-            //steps {
-                //sh('kubectl get ingress -n=productin')
-                //}
-           //}        
+         stage('show ingress') {
+            steps {
+                sh('kubectl get ingress -n=productin')
+                }
+           }        
       }
 }
