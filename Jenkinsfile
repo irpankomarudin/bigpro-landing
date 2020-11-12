@@ -30,7 +30,7 @@ pipeline {
            }
         stage('add domain') {
             steps {
-                sh('sed -i "s/landing.komarudins.online/landing.komarudins.online/g" kube-landing.yml')
+                sh('sed -i "s/landing.komarudins.online/landing-cilsy.komarudins.online/g" kube-landing.yml')
                 }
            }
         stage('deploy') {
